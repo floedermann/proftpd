@@ -14,6 +14,7 @@ RUN set -x \
     && apk add --no-cache --virtual .persistent-deps \
         ca-certificates \
         curl \
+		bash \
     && apk add --no-cache --virtual .build-deps \
         $PROFTPD_DEPS \
     && curl -fSL ftp://ftp.proftpd.org/distrib/source/proftpd-${PROFTPD_VERSION}.tar.gz -o proftpd.tgz \
@@ -30,8 +31,11 @@ RUN set -x \
     && make clean \
     && apk del .build-deps
 
+RUN echo "ftp:ftp123" | chpasswd
+	
 EXPOSE 20
 EXPOSE 21	
+EXPOSE 60000-60020
 
 COPY proftpd.conf /usr/local/etc
 
